@@ -67,7 +67,7 @@ class _GameScreenState extends State<GameScreen> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home, size: 35),
         ),
         actions: [ScoreViewer(score: gameManager.getScore())],
         actionsPadding: EdgeInsets.symmetric(horizontal: 20),
