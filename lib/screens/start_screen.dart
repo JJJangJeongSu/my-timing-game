@@ -12,7 +12,8 @@ class StartScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("타이밍 게임", style: TextStyle(fontSize: 40)),
+            Text("시간 감각 테스트", style: TextStyle(fontSize: 40)),
+            Text("당신의 감을 테스트 해보세요"),
             Container(height: 70),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
