@@ -70,7 +70,6 @@ class _GameScreenState extends State<GameScreen> {
           icon: Icon(Icons.home, size: 35),
         ),
         actions: [ScoreViewer(score: gameManager.getScore())],
-        actionsPadding: EdgeInsets.symmetric(horizontal: 20),
       ),
       body: Center(
         child: Column(
