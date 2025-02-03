@@ -7,6 +7,17 @@ class RandomTimeViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("$targetTime초", style: TextStyle(fontSize: 40));
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("$targetTime초", style: TextStyle(fontSize: 50)),
+            Text("에"),
+          ],
+        ),
+        Text("멈추세요")
+      ],
+    );
   }
 }

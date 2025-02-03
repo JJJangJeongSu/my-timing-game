@@ -11,8 +11,10 @@ class GuessResultViewer extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text("사용자의 예측: ${gameManager.getUserGuessInMilli() / 1000}"),
-        Text("차이: ${(gameManager.getUserGuessInMilli()/1000-gameManager.getCurrentTarget()).abs().toStringAsFixed(3)}"),
-        Text("허용 범위: ${(gameManager.getCurrentSuccessMilli()/1000).toStringAsFixed(3)}"),
+        Text(
+            "차이: ${(gameManager.getUserGuessInMilli() / 1000 - gameManager.getCurrentTarget()).abs().toStringAsFixed(3)}"),
+        Text(
+            "허용 범위: ${(gameManager.getCurrentSuccessMilli() / 1000).toStringAsFixed(3)}"),
       ],
     );
   }
