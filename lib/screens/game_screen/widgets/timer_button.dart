@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/game_screen/utilities/game_manager.dart';
+import 'package:myapp/providers/game_manger.dart';
 
 class TimerButton extends StatelessWidget {
-  const TimerButton(
-      {super.key, required this.gameStatus, required this.onClick});
+  const TimerButton({
+    super.key,
+    required this.gameStatus,
+    required this.onClick,
+    required this.context,
+  });
   final GameStatus gameStatus;
-  final VoidCallback onClick;
+  final void Function(BuildContext) onClick;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onClick,
+      onPressed: () => onClick(context),
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(50),
         textStyle: Theme.of(context)

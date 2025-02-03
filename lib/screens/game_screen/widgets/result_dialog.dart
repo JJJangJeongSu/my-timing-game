@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/game_screen/utilities/game_manager.dart';
+import 'package:myapp/providers/game_manger.dart';
 
 class ResultDialog extends StatefulWidget {
   const ResultDialog({super.key, required this.gameManager});
@@ -26,9 +26,12 @@ class _ResultDialogState extends State<ResultDialog> {
             "최고 점수: ${13}",
             style: Theme.of(context).textTheme.displaySmall,
           ),
-          Container(height:30),
-          Text("완전 못해 ㅋㅋ", style: Theme.of(context).textTheme.displaySmall,),
-          Container(height:20),
+          Container(height: 30),
+          Text(
+            "완전 못해 ㅋㅋ",
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+          Container(height: 20),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

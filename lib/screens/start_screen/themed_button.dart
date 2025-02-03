@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ThemedButton extends StatelessWidget {
-  const ThemedButton(
-      {super.key,
-      required this.content,
-      required this.screen,
-      required this.context});
+  const ThemedButton({
+    super.key,
+    required this.content,
+    required this.screen,
+    required this.context,
+  });
   final String content;
   final Widget screen;
   final BuildContext context;
