@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/game_screen/utilities/game_manager.dart';
+import 'package:myapp/providers/game_manger.dart';
 import 'package:myapp/screens/game_screen/widgets/life_viewer.dart';
 import 'package:myapp/screens/game_screen/widgets/random_time_viewer.dart';
 import 'package:myapp/screens/game_screen/widgets/guess_result_viewer.dart';
 import 'package:myapp/screens/game_screen/widgets/result_dialog.dart';
 import 'package:myapp/screens/game_screen/widgets/timer_button.dart';
+import 'package:provider/provider.dart';
 
-class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
-
-  @override
-  State<GameScreen> createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
+class GameScreen extends StatelessWidget {
   DateTime? startTime;
   DateTime? endTime;
-  GameManager gameManager = GameManager();
   int score = 0;
-  int currentTimeTarget = 0;
   late Color currentBackgroundColor;
 
-  Color getBackgroundColor(GameStatus status) {
+  Color getBackgroundColor(GameStatus status, BuildContext context) {
     switch (status) {
       case GameStatus.ready:
         return Theme.of(context).primaryColorLight;
@@ -32,21 +24,8 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    currentBackgroundColor =
-        Theme.of(context).primaryColorLight; // 여기서 `Theme.of(context)` 사용
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    gameManager.generateRandomTarget();
-    currentTimeTarget = gameManager.getCurrentTarget();
-  }
-
-  void toggleButton() {
+  void toggleButton(BuildContext context) {
+    final GameManager gameManager = context.read<GameManager>();
     GameStatus currentStatus = gameManager.getCurrentState();
 
     if (currentStatus == GameStatus.ready) {
@@ -54,46 +33,33 @@ class _GameScreenState extends State<GameScreen> {
       startTime = DateTime.now();
 
       // Set State to 'running'
-      setState(() {
-        gameManager.setGameState(GameStatus.running);
-      });
+      gameManager.setGameState(GameStatus.running);
     } else if (currentStatus == GameStatus.running) {
       // Stop Timer
       endTime = DateTime.now();
 
       // Check Whether Success or Fail
       if (gameManager.isGuessSucceed(startTime!, endTime!)) {
-        setState(() {
-          gameManager.handleSuccess();
-        });
+        gameManager.handleSuccess();
       } else {
-        setState(() {
-          gameManager.handleFail();
-        });
+        gameManager.handleFail();
         if (gameManager.isGameOver()) {
-          showResultScreen(gameManager);
+          showResultScreen(gameManager, context);
         }
       }
 
       // Set State to 'stopped'
-      setState(() {
-        gameManager.setGameState(GameStatus.stopped);
-      });
+      gameManager.setGameState(GameStatus.stopped);
     } else if (currentStatus == GameStatus.stopped) {
       // Generate New Time & Display the content
-      gameManager.generateRandomTarget();
-      setState(() {
-        currentTimeTarget = gameManager.getCurrentTarget();
-      });
+      gameManager.setRandomTarget();
 
       // Set State to 'ready'
-      setState(() {
-        gameManager.setGameState(GameStatus.ready);
-      });
+      gameManager.setGameState(GameStatus.ready);
     }
   }
 
-  void showResultScreen(GameManager gameManager) {
+  void showResultScreen(GameManager gameManager, BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -104,22 +70,22 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: getBackgroundColor(gameManager.getCurrentState()),
+      backgroundColor: getBackgroundColor(
+          context.watch<GameManager>().getCurrentState(), context),
       appBar: AppBar(
         centerTitle: true,
         titleTextStyle: Theme.of(context).textTheme.displaySmall,
         title: Padding(
           padding: EdgeInsets.only(),
           child: Text(
-            "Score: ${gameManager.getScore()}",
+            "Score: ${context.watch<GameManager>().getScore()}",
           ),
         ),
-        backgroundColor: getBackgroundColor(gameManager.getCurrentState()),
+        backgroundColor: getBackgroundColor(
+            context.watch<GameManager>().getCurrentState(), context),
         leading: IconButton(
           onPressed: () {
-            setState(() {
-              gameManager.resetStatus();
-            });
+            Provider.of<GameManager>(context, listen: false).resetStatus();
             Navigator.of(context).pop();
           },
           icon: Icon(
@@ -132,15 +98,27 @@ class _GameScreenState extends State<GameScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            LifeViewer(currentLife: gameManager.getLife()),
-            RandomTimeViewer(targetTime: currentTimeTarget),
-            Visibility(
-              visible: gameManager.getCurrentState() == GameStatus.stopped,
-              child: GuessResultViewer(gameManager: gameManager),
+            Consumer<GameManager>(
+              builder: (context, gameManger, child) => LifeViewer(
+                currentLife: gameManger.getLife(),
+              ),
             ),
-            TimerButton(
-              gameStatus: gameManager.getCurrentState(),
-              onClick: toggleButton,
+            Consumer<GameManager>(
+              builder: (context, gameManager, child) => RandomTimeViewer(
+                targetTime: gameManager.getCurrentTarget(),
+              ),
+            ),
+            Consumer<GameManager>(
+              builder: (context, gameManager, child) => Visibility(
+                visible: gameManager.getCurrentState() == GameStatus.stopped,
+                child: GuessResultViewer(gameManager: gameManager),
+              ),
+            ),
+            Consumer<GameManager>(
+              builder: (context, gameManager, child) => TimerButton(
+                  gameStatus: gameManager.getCurrentState(),
+                  onClick: toggleButton,
+                  context: context),
             ),
           ],
         ),

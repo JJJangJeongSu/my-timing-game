@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/game_screen/utilities/game_manager.dart';
+import 'package:myapp/providers/game_manger.dart';
 
 class GuessResultViewer extends StatelessWidget {
   const GuessResultViewer({super.key, required this.gameManager});
